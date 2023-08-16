@@ -99,8 +99,8 @@ DROP TABLE IF EXISTS `Delivery`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `Delivery` (
-  `DeliveryID` int NOT NULL AUTO_INCREMENT,
-  `OrderStatus` varchar(45) NOT NULL,
+  `DeliveryID` int NOT NULL DEFAULT '0',
+  `OrderStatus` varchar(45) NOT NULL DEFAULT 'NA',
   `DeliveryDate` date NOT NULL,
   PRIMARY KEY (`DeliveryID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -112,6 +112,7 @@ CREATE TABLE `Delivery` (
 
 LOCK TABLES `Delivery` WRITE;
 /*!40000 ALTER TABLE `Delivery` DISABLE KEYS */;
+INSERT INTO `Delivery` VALUES (1,'Delivered','2022-11-12'),(2,'Not delivered','2022-11-20'),(3,'Delivered','2022-11-22'),(4,'Delivered','2022-12-01');
 /*!40000 ALTER TABLE `Delivery` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -123,12 +124,12 @@ DROP TABLE IF EXISTS `MenuItems`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `MenuItems` (
-  `MenuItemsID` int NOT NULL AUTO_INCREMENT,
+  `MenuItemsID` int NOT NULL,
   `Drinks` varchar(100) NOT NULL,
   `Starters` varchar(100) NOT NULL,
   `Courses` varchar(100) NOT NULL,
   `Desserts` varchar(100) NOT NULL,
-  `Price` decimal(4,2) NOT NULL,
+  `Price` decimal(10,2) NOT NULL,
   `Description` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`MenuItemsID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -140,6 +141,7 @@ CREATE TABLE `MenuItems` (
 
 LOCK TABLES `MenuItems` WRITE;
 /*!40000 ALTER TABLE `MenuItems` DISABLE KEYS */;
+INSERT INTO `MenuItems` VALUES (1,'Athens White wine','Olives','Greek salad','Greek yoghurt',93.75,'From Greece'),(2,'Corfu Red Wine','Flatbread','Bean Soup','Ice Cream',352.50,'From Northern Italy'),(3,'Italian Coffee','Minestrone','Pizza','Cheesecake',37.50,'From Southern Italy'),(4,'Roma Red wine','Tomato bread','Carbonara','Affogato',110.00,'Meditenarean'),(5,'Ankara White Wine','Falafel','Kabasa','Turkish yoghurt',240.00,'From Istanbul'),(6,'Turkish Coffee','Hummus','Shwarma','Baklava',315.00,'From east Turkey');
 /*!40000 ALTER TABLE `MenuItems` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -151,13 +153,12 @@ DROP TABLE IF EXISTS `Menus`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `Menus` (
-  `MenuID` int NOT NULL AUTO_INCREMENT,
+  `MenuID` int NOT NULL,
   `MenuName` varchar(100) NOT NULL,
   `Cuisine` varchar(100) NOT NULL,
-  `MenuItemsID` int NOT NULL,
+  `MenuItemsID` int NOT NULL DEFAULT '0',
   PRIMARY KEY (`MenuID`),
-  KEY `menu_items_id_pk_idx` (`MenuItemsID`),
-  CONSTRAINT `menu_items_id_pk` FOREIGN KEY (`MenuItemsID`) REFERENCES `MenuItems` (`MenuItemsID`) ON DELETE CASCADE ON UPDATE CASCADE
+  KEY `menu_items_id_pk_idx` (`MenuItemsID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -167,6 +168,7 @@ CREATE TABLE `Menus` (
 
 LOCK TABLES `Menus` WRITE;
 /*!40000 ALTER TABLE `Menus` DISABLE KEYS */;
+INSERT INTO `Menus` VALUES (1,'Greek  World','Greek',1),(2,'Italian World','Italian',2),(3,'Turkish World','Turkish',3);
 /*!40000 ALTER TABLE `Menus` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -178,7 +180,7 @@ DROP TABLE IF EXISTS `Orders`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `Orders` (
-  `OrderID` int NOT NULL AUTO_INCREMENT,
+  `OrderID` int NOT NULL,
   `TotalCost` decimal(10,2) NOT NULL,
   `Quantity` int NOT NULL,
   `MenuID` int NOT NULL,
@@ -186,10 +188,10 @@ CREATE TABLE `Orders` (
   `DeliveryID` int NOT NULL,
   `CustomerID` int NOT NULL,
   PRIMARY KEY (`OrderID`),
-  KEY `menu_id_idx` (`MenuID`),
   KEY `booking_id_pk_idx` (`BookingID`),
-  KEY `delivery_id_pk_idx` (`DeliveryID`),
   KEY `customer_id_pk_idx` (`CustomerID`),
+  KEY `menu_id_pk_idx` (`MenuID`),
+  KEY `delivery_id_pk_idx` (`DeliveryID`),
   CONSTRAINT `booking_id_pk` FOREIGN KEY (`BookingID`) REFERENCES `Bookings` (`BookingID`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `customer_id_pk_2` FOREIGN KEY (`CustomerID`) REFERENCES `Customers` (`CustomerID`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `delivery_id_pk` FOREIGN KEY (`DeliveryID`) REFERENCES `Delivery` (`DeliveryID`) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -203,6 +205,7 @@ CREATE TABLE `Orders` (
 
 LOCK TABLES `Orders` WRITE;
 /*!40000 ALTER TABLE `Orders` DISABLE KEYS */;
+INSERT INTO `Orders` VALUES (1,125.00,2,1,1,1,1),(2,235.00,1,2,2,2,2),(3,75.00,3,2,3,3,3),(4,220.00,3,3,4,4,4);
 /*!40000 ALTER TABLE `Orders` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -484,4 +487,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-08-15 16:09:05
+-- Dump completed on 2023-08-16 11:07:49
